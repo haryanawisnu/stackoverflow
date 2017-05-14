@@ -10,6 +10,6 @@ router.post('/sub', Question.subcreate);
 router.put('/:id/:userid', Question.update);
 router.put('/sub', Question.subupdate);
 router.delete('/:id/:userid', Question.delete);
-router.delete('/sub', Question.subdelete);
+router.delete('/sub/:id/:answerid/:userid', Question.subdelete);
 
 module.exports = router;

@@ -13,7 +13,7 @@ let answerControllers = {
   showOne: function(req, res) {
     Question.findOne({
       _id: req.params.id
-    }).exec((err, result) => {
+    }).populate(['author', 'answer.author']).exec((err, result) => {
       if (err) {
         res.send(err);
       } else {
@@ -182,9 +182,10 @@ let answerControllers = {
     });
   },
   subdelete: function(req, res) {
-    let question_id = req.body.id;
-    let answer_id = req.body.answerid;
-    let author_id = req.body.userid;
+    let question_id = req.params.id;
+    let answer_id = req.params.answerid;
+    let author_id = req.params.userid;
+    console.log(question_id + ',' + answer_id + ',' + author_id);
     Question.findOne({
       _id: question_id
     }).exec(function(err, result) {
