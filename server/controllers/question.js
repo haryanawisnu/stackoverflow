@@ -2,11 +2,11 @@ const Question = require('../models/question');
 
 let answerControllers = {
   showAll: function(req, res) {
-    Question.find().populate('author').exec((err, result) => {
+    Question.find().populate(['author', 'answer.author']).exec((err, result) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(result);
+        res.send(result.reverse());
       }
     });
   },

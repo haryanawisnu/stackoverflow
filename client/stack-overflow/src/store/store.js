@@ -4,6 +4,21 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    user: {}
+    params: {
+      detail: {
+        title: 'aa',
+        description: 'aa',
+        author: {
+          username: 'aa'
+        },
+        answer: [{
+          author: {
+            username: 'aa'
+          },
+          description: 'aa',
+          created: 'aa'
+        }]
+      }
+    }
   }
 })

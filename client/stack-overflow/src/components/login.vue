@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: 'index',
+  name: 'login',
   data() {
     return {
       username: '',
@@ -45,8 +45,8 @@ export default {
           })
           .then(function(response) {
             console.log(response);
-            $("#signupsuccess").fadeIn();
             self.reset();
+            $("#signupsuccess").fadeIn();
           })
           .catch(function(error) {
             console.log(error);
@@ -61,6 +61,12 @@ export default {
       this.username = '';
       this.password = '';
       this.email = '';
+      setTimeout(function() {
+        $("#signupsuccess").hide();
+      }, 2000);
+      setTimeout(function() {
+        $("#signupwarning").hide();
+      }, 2000);
     },
     validdata() {
       if (this.username == '' || this.password == '' || this.email == '') {
