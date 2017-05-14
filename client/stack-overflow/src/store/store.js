@@ -11,13 +11,7 @@ export const store = new Vuex.Store({
         author: {
           username: 'aa'
         },
-        answer: [{
-          author: {
-            username: 'aa'
-          },
-          description: 'aa',
-          created: 'aa'
-        }]
+        answer: []
       }
     }
   }

@@ -152,7 +152,6 @@ let answerControllers = {
       _id: question_id
     }).exec(function(err, result) {
       if (result) {
-        console.log(result);
         var obj = {};
         obj.id = Math.floor((Math.random() * 99999999999999999) + 1);
         obj.description = req.body.description;
@@ -185,7 +184,7 @@ let answerControllers = {
     let question_id = req.params.id;
     let answer_id = req.params.answerid;
     let author_id = req.params.userid;
-    console.log(question_id + ',' + answer_id + ',' + author_id);
+    // console.log(question_id + ',' + answer_id + ',' + author_id);
     Question.findOne({
       _id: question_id
     }).exec(function(err, result) {

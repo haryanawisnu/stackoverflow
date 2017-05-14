@@ -54,7 +54,7 @@ export default {
           .then(function(response) {
             console.log(response);
             self.database.ref('question/' + response.data._id).set({
-              status: false
+              status: Math.floor((Math.random() * 999999999) + 1)
             });
             $("#createsuccess").fadeIn();
             self.reset();
@@ -82,9 +82,16 @@ export default {
       } else {
         return true;
       }
+    },
+    cektoken(params) {
+      if (!params) {
+        this.$router.push('/')
+      }
     }
   },
   created() {
+    let token = localStorage.getItem('token');
+    this.cektoken(token);
     this.database = firebase.database();
   }
 }

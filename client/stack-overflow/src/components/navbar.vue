@@ -8,7 +8,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" style="color:#ffffff;"><b>Tweet Overflow</b></a>
+        <a @click="tohome" class="navbar-brand" style="color:#ffffff;"><b>Tweet Overflow</b></a>
       </div>
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
@@ -25,6 +25,7 @@
               <button type="submit" class="btn btn-primary" @click="login">Login</button>
             </div>
             <div v-else class="navbar-form navbar-right" role="form">
+              <a style="color:#ffffff;">I'm<b> {{messaage}}   &nbsp&nbsp</b></a>
               <button type="submit" class="btn btn-warning" @click="logout">Logout</button>
             </div>
           </div>
@@ -101,6 +102,7 @@ export default {
       this.status = true;
       localStorage.removeItem('data');
       localStorage.removeItem('token');
+      this.$router.push('/')
     },
     reset() {
       this.username = '';
@@ -121,6 +123,9 @@ export default {
       } else {
         return true;
       }
+    },
+    tohome() {
+      this.$router.push('/home')
     }
   }
 }

@@ -1,6 +1,7 @@
 <template>
 <div class="groupquestion">
   <div v-for="question in list_question">
+    <hr>
     <div class="post-preview text-left">
       <a @click="setparam(question)">
         <h2 class="post-title">{{question.title}}</h2>
@@ -59,6 +60,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.groupquestion {
+  background-color: #ffffff;
+}
+
+.post-preview {
+  margin-left: 40px;
+  margin-top: 20px;
+}
+
 .post-preview>a {
   color: #333333;
 }
