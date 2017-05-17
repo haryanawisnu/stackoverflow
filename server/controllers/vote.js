@@ -11,13 +11,26 @@ let answerControllers = {
     });
   },
   showOne: function(req, res) {
-    Vote.findOne({
-      _id: req.params.id
+    Vote.find({
+      id_obj: req.params.id
     }).exec((err, result) => {
       if (err) {
         res.send(err);
       } else {
-        res.send(result);
+        let down = 0,
+          up = 0;
+        result.forEach(arr => {
+          if (arr.action) {
+            up++;
+          } else {
+            down++;
+          }
+        })
+        res.send({
+          down: down,
+          up: up,
+          data: result
+        });
       }
     });
   },
@@ -46,15 +59,50 @@ let answerControllers = {
     });
   },
   create: (req, res, next) => {
-    Vote.create({
+    Vote.findOne({
       id_obj: req.body.id_obj,
       author: req.body.author,
-      action: req.body.action
-    }, function(err, result) {
-      if (result) {
-        res.send(result);
-      } else {
+    }).exec((err, result) => {
+      if (err) {
         res.send(err);
+      } else {
+        if (result) {
+          if (result.action == req.body.action) {
+            res.send({
+              result: false
+            });
+          } else {
+            Vote.update({
+              _id: result._id
+            }, {
+              $set: {
+                action: req.body.action
+              }
+            }, function(err, result) {
+              if (result) {
+                res.send({
+                  result: true
+                });
+              } else {
+                res.send(err);
+              }
+            });
+          }
+        } else {
+          Vote.create({
+            id_obj: req.body.id_obj,
+            author: req.body.author,
+            action: req.body.action
+          }, function(err, result) {
+            if (result) {
+              res.send({
+                result: true
+              });
+            } else {
+              res.send(err);
+            }
+          });
+        }
       }
     });
   },

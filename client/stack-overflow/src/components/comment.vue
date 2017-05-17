@@ -1,7 +1,7 @@
 <template>
 <div class="comment">
   <ul class="comments-list">
-    <li v-for="data in answer" class="comment">
+    <li v-for="(data,index) in answer" class="comment">
       <hr>
       <div class="comment-body text-left">
         <div class="alert alert-warning" id="warn" role="alert" style="display:none;">
@@ -14,12 +14,12 @@
           <h5 class="time ">{{data.created}}</h5>
         </div>
         <p>{{data.description}}</p>
-        <!-- <a href="# " class="btn btn-default stat-item ">
-                    <i class="fa fa-thumbs-up icon "></i>2
-                </a>
-        <a href="# " class="btn btn-default stat-item ">
-                            <i class="fa fa-thumbs-down icon "></i>2
-                        </a> -->
+        <a @click="vote(true,data.id)" class="btn btn-default stat-item">
+                      <i class="fa fa-thumbs-up icon"></i>{{up[index]}}
+                  </a>
+        <a @click="vote(false,data.id)" class="btn btn-default stat-item">
+                              <i class="fa fa-thumbs-down icon"></i>{{down[index]}}
+                          </a>
       </div>
       <hr>
     </li>
@@ -37,15 +37,49 @@ export default {
       database: '',
       action: '',
       user: '',
-      message: ''
+      message: '',
+      down: [],
+      up: []
     }
   },
   methods: {
+    vote(params, id) {
+      let self = this;
+      axios.post('http://localhost:3000/vote', {
+          id_obj: id,
+          author: self.user._id,
+          action: params
+        })
+        .then(function(response) {
+          if (response.data.result) {
+            console.log(self.id);
+            self.database.ref('question/' + self.id).set({
+              status: Math.floor((Math.random() * 999999999) + 1)
+            });
+          } else {
+            console.log(response.data.result);
+            alert('Anda sudah vote!');
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     seedData(params) {
       let self = this;
       axios.get('http://localhost:3000/question/' + params)
         .then(function(response) {
           self.answer = response.data.answer;
+          self.answer.forEach(data => {
+            axios.get('http://localhost:3000/vote/' + data.id)
+              .then(function(response) {
+                self.up.push(response.data.up);
+                self.down.push(response.data.down);
+              })
+              .catch(function(error) {
+                console.log(error);
+              });
+          })
         })
         .catch(function(error) {
           console.log(error);

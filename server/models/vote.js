@@ -6,7 +6,7 @@ let voteSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
   action: Boolean
 });
 

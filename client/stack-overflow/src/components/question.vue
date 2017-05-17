@@ -33,11 +33,11 @@
             <a href="#"><b>{{detail.author.username}}</b></a> made a post.
           </div>
           <div class="stats">
-            <a href="#" class="btn btn-default stat-item">
-                        <i class="fa fa-thumbs-up icon"></i>2
+            <a @click="vote(true)" class="btn btn-default stat-item">
+                        <i class="fa fa-thumbs-up icon"></i>{{up}}
                     </a>
-            <a href="#" class="btn btn-default stat-item">
-                                <i class="fa fa-thumbs-down icon"></i>2
+            <a @click="vote(false)" class="btn btn-default stat-item">
+                                <i class="fa fa-thumbs-down icon"></i>{{down}}
                             </a>
             <a @click="editon" v-if="user._id==detail.author._id" class="btn btn-default">
                                                                   <i  class="fa fa-pencil-square-o icon"></i>
@@ -72,10 +72,32 @@ export default {
       editstatus: false,
       editvalue: '',
       database: '',
-      commentvalue: ''
+      commentvalue: '',
+      down: 0,
+      up: 0
     }
   },
   methods: {
+    vote(params) {
+      let self = this;
+      axios.post('http://localhost:3000/vote', {
+          id_obj: self.detail._id,
+          author: self.user._id,
+          action: params
+        })
+        .then(function(response) {
+          if (response.data.result) {
+            self.database.ref('question/' + self.detail._id).set({
+              status: Math.floor((Math.random() * 999999999) + 1)
+            });
+          } else {
+            alert('Anda sudah vote!');
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     deleteQuestion() {
       let self = this;
       axios.delete('http://localhost:3000/question/' + this.detail._id + '/' + this.user._id)
@@ -108,17 +130,39 @@ export default {
         });
     },
     addComment() {
-      let self = this;
-      axios.post('http://localhost:3000/question/sub', {
-          id: self.detail._id,
-          userid: self.user._id,
-          description: self.commentvalue
-        })
-        .then(function(response) {
-          self.commentvalue = '';
-          self.database.ref('question/' + self.detail._id).set({
-            status: Math.floor((Math.random() * 999999999) + 1)
+      if (this.validdata()) {
+        let self = this;
+        axios.post('http://localhost:3000/question/sub', {
+            id: self.detail._id,
+            userid: self.user._id,
+            description: self.commentvalue
+          })
+          .then(function(response) {
+            self.commentvalue = '';
+            self.database.ref('question/' + self.detail._id).set({
+              status: Math.floor((Math.random() * 999999999) + 1)
+            });
+          })
+          .catch(function(error) {
+            console.log(error);
           });
+      } else {
+        console.log('jangan kosong');
+      }
+    },
+    validdata() {
+      if (this.commentvalue == '') {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    seedvote(params) {
+      let self = this;
+      axios.get('http://localhost:3000/vote/' + params)
+        .then(function(response) {
+          self.up = response.data.up;
+          self.down = response.data.down;
         })
         .catch(function(error) {
           console.log(error);
@@ -137,9 +181,14 @@ export default {
     temp = JSON.parse(temp);
     this.user = temp;
     let self = this;
-    this.detail = this.$store.state.params.detail;
-    this.editvalue = this.detail.description;
+    self.detail = self.$store.state.params.detail;
+    self.seedvote(self.detail._id);
+    self.editvalue = self.detail.description;
     self.database = firebase.database();
+    self.action = self.database.ref('question/' + self.detail._id);
+    self.action.on('value', function(snapshot) {
+      self.seedvote(self.detail._id);
+    });
   }
 }
 </script>

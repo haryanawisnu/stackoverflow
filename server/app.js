@@ -6,11 +6,13 @@ const mongoose = require('mongoose');
 let users = require('./routes/users');
 let index = require('./routes/index');
 let question = require('./routes/question');
+let vote = require('./routes/vote');
 var usersControllers = require('./controllers/users');
 var passport = require('passport');
 
 let db_config = {
-  development: 'mongodb://localhost/stack-dev',
+  // development: 'mongodb://hactive:hactive@hacktive-shard-00-00-cieef.mongodb.net:27017,hacktive-shard-00-01-cieef.mongodb.net:27017,hacktive-shard-00-02-cieef.mongodb.net:27017/stack?ssl=true&replicaSet=hacktive-shard-0&authSource=admin',
+  development: 'mongodb://localhost/stack',
   test: 'mongodb://localhost/stack-test'
 }
 
@@ -39,6 +41,7 @@ app.use(cors());
 
 app.use('/question', question);
 app.use('/users', users);
+app.use('/vote', vote);
 app.use('/', index);
 
 app.listen(3000);
